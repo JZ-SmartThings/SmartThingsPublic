@@ -1,4 +1,4 @@
-/**
+/***
  *  Generic HTTP Device v1.0.20170205
  *  Source code can be found here: https://github.com/JZ-SmartThings/SmartThings/blob/master/Devices/Generic%20HTTP%20Device/GenericHTTPDevice.groovy
  *  Copyright 2017 JZ
