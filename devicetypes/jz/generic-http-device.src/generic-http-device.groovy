@@ -315,7 +315,7 @@ def parse(String description) {
 	def headersReturned = ' '
 	if (descMap["body"]) { bodyReturned = new String(descMap["body"].decodeBase64()) }
 	if (descMap["headers"]) { headersReturned = new String(descMap["headers"].decodeBase64()) }
-	log.debug "BODY---" + bodyReturned
+	//log.debug "BODY---" + bodyReturned
 	//log.debug "HEADERS---" + headersReturned
 
 	if (descMap["body"]) {
@@ -446,10 +446,11 @@ def parse(String description) {
 		}
 		if (jsonlist."SensorPinStatus"=="Open") {
 			sendEvent(name: "contact", value: "open", descriptionText: "$device.displayName is open")
+			sendEvent(name: "sensorTriggered", value: jsonlist."Date", unit: "")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
-			log.trace "changed contact to open"
 		} else if (jsonlist."SensorPinStatus"=="Closed") {
 			sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName is closed")
+			sendEvent(name: "sensorTriggered", value: jsonlist."Date", unit: "")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		}
 		if (jsonlist."CPU") {
