@@ -406,8 +406,7 @@ def parse(String description) {
 			sendEvent(name: "customswitch", value: "on", isStateChange: true)
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 			whichTile = 'customon'
-		}
-		else if (jsonlist."CustomPinStatus"==0) {
+		} else if (jsonlist."CustomPinStatus"==0) {
 			sendEvent(name: "customswitch", value: "off", isStateChange: true)
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 			whichTile = 'customoff'
@@ -439,8 +438,7 @@ def parse(String description) {
 			sendEvent(name: "switch", value: "on", isStateChange: true)
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 			whichTile = 'mainon'
-		}
-		else if (jsonlist."MainPinStatus"==0) {
+		} else if (jsonlist."MainPinStatus"==0) {
 			sendEvent(name: "switch", value: "off", isStateChange: true)
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 			whichTile = 'mainoff'
@@ -448,8 +446,7 @@ def parse(String description) {
 		if (jsonlist."SensorPinStatus"=="Open") {
 			sendEvent(name: "contact", value: "open", descriptionText: "$device.displayName is open")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
-		}
-		else if (jsonlist."MainPinStatus"==0) {
+		} else if (jsonlist."SensorPinStatus"=="Closed") {
 			sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName is closed")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		}
