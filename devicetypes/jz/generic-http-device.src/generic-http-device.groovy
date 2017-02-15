@@ -445,12 +445,12 @@ def parse(String description) {
 			whichTile = 'mainoff'
 		}
 		if (jsonlist."SensorPinStatus"=="Open") {
+			if (device.currentState("contact").getValue()=="closed") { sendEvent(name: "sensorTriggered", value: "OPEN @ " + jsonlist."Date", unit: "") }
 			sendEvent(name: "contact", value: "open", descriptionText: "$device.displayName is open")
-			sendEvent(name: "sensorTriggered", value: "OPEN @ " + jsonlist."Date", unit: "")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		} else if (jsonlist."SensorPinStatus"=="Closed") {
+			if (device.currentState("contact").getValue()=="open") { sendEvent(name: "sensorTriggered", value: "CLOSED @ " + jsonlist."Date", unit: "") }
 			sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName is closed")
-			sendEvent(name: "sensorTriggered", value: "CLOSED @ " + jsonlist."Date", unit: "")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		}
 		if (jsonlist."CPU") {
