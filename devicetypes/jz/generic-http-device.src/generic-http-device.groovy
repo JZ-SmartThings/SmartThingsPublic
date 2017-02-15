@@ -446,11 +446,11 @@ def parse(String description) {
 		}
 		if (jsonlist."SensorPinStatus"=="Open") {
 			sendEvent(name: "contact", value: "open", descriptionText: "$device.displayName is open")
-			sendEvent(name: "sensorTriggered", value: jsonlist."Date", unit: "")
+			sendEvent(name: "sensorTriggered", value: "OPEN @ " + jsonlist."Date", unit: "")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		} else if (jsonlist."SensorPinStatus"=="Closed") {
 			sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName is closed")
-			sendEvent(name: "sensorTriggered", value: jsonlist."Date", unit: "")
+			sendEvent(name: "sensorTriggered", value: "CLOSED @ " + jsonlist."Date", unit: "")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		}
 		if (jsonlist."CPU") {
