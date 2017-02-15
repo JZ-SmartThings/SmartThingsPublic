@@ -354,7 +354,7 @@ def parse(String description) {
 				if (line.contains('SensorPinStatus=Open')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Open") }
 				if (line.contains('SensorPinStatus=Closed')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Closed") }
 				if (line.contains('Contact Sensor=Open')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Open") }
-				if (line.contains('ContactSensor=Closed')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Closed") }
+				if (line.contains('Contact Sensor=Closed')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Closed") }
 				if (line.contains('Refresh=Success')) { jsonlist.put ("Refresh", "Success") }
 				if (line.contains('Refresh=Failed : Authentication Required!')) { jsonlist.put ("Refresh", "Authentication Required!") }
 				if (line.contains('RebootNow=Success')) { jsonlist.put ("RebootNow", "Success") }
