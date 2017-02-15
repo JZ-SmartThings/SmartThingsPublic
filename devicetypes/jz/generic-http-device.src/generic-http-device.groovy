@@ -314,7 +314,7 @@ def parse(String description) {
 	def headersReturned = ' '
 	if (descMap["body"]) { bodyReturned = new String(descMap["body"].decodeBase64()) }
 	if (descMap["headers"]) { headersReturned = new String(descMap["headers"].decodeBase64()) }
-	//log.debug "BODY---" + bodyReturned
+	log.debug "BODY---" + bodyReturned
 	//log.debug "HEADERS---" + headersReturned
 
 	if (descMap["body"]) {
