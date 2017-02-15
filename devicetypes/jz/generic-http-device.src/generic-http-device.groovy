@@ -223,6 +223,7 @@ def ClearTiles() {
 	sendEvent(name: "mainTriggered", value: "", unit: "")
 	sendEvent(name: "customTriggered", value: "", unit: "")
 	sendEvent(name: "refreshTriggered", value: "", unit: "")
+	sendEvent(name: "sensorTriggered", value: "", unit: "")
 	sendEvent(name: "cpuUsage", value: "", unit: "")
 	sendEvent(name: "cpuTemp", value: "", unit: "")
 	sendEvent(name: "spaceUsed", value: "", unit: "")
@@ -446,6 +447,7 @@ def parse(String description) {
 		if (jsonlist."SensorPinStatus"=="Open") {
 			sendEvent(name: "contact", value: "open", descriptionText: "$device.displayName is open")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
+			log.trace "changed contact to open"
 		} else if (jsonlist."SensorPinStatus"=="Closed") {
 			sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName is closed")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
