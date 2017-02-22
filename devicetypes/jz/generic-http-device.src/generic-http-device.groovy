@@ -43,7 +43,7 @@ metadata {
 		input("DeviceIP", "string", title:"Device IP Address", description: "Please enter your device's IP Address", required: true, displayDuringSetup: true)
 		input("DevicePort", "string", title:"Device Port", description: "Empty assumes port 80.", required: false, displayDuringSetup: true)
 		input("DevicePath", "string", title:"URL Path", description: "Rest of the URL, include forward slash.", displayDuringSetup: true)
-		input(name: "DevicePostGet", type: "enum", title: "POST or GET", options: ["POST","GET"], defaultValue: "POST", required: false, displayDuringSetup: true)
+		input(name: "DevicePostGet", type: "enum", title: "POST or GET. POST for PHP & GET for Arduino.", options: ["POST","GET"], defaultValue: "POST", required: false, displayDuringSetup: true)
 		input("UseOffVoiceCommandForCustom", "bool", title:"Use the OFF voice command (e.g. by Alexa) to control the Custom command? Assumed ON if MainTrigger is Momentary setting below is ON.", description: "", defaultValue: false, required: false, displayDuringSetup: true)
 		input("DeviceMainMomentary", "bool", title:"MainTrigger is Momentary?", description: "", defaultValue: true, required: false, displayDuringSetup: true)	
 		input("DeviceMainPin", "number", title:'Main Pin Number in BCM Format', description: 'Empty assumes pin #4.', required: false, displayDuringSetup: false)
