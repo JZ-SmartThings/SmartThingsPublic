@@ -1,5 +1,5 @@
 /**
- *  Generic HTTP Device v1.0.20170218
+ *  Generic HTTP Device v1.0.20170221
  *  Source code can be found here: https://github.com/JZ-SmartThings/SmartThings/blob/master/Devices/Generic%20HTTP%20Device/GenericHTTPDevice.groovy
  *  Copyright 2017 JZ
  *
@@ -452,6 +452,9 @@ def parse(String description) {
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		} else if (jsonlist."SensorPinStatus"=="Closed") {
 			if (device.currentState("contact").getValue()=="open") { sendEvent(name: "sensorTriggered", value: "CLOSED @ " + jsonlist."Date", unit: "") }
+			sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName is closed")
+			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
+		} else {
 			sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName is closed")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		}
