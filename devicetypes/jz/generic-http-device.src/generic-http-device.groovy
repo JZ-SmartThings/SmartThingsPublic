@@ -21,6 +21,7 @@ metadata {
 		capability "Sensor"
 		capability "Polling"
 		capability "Refresh"
+		capability "Health Check"
 		attribute "mainTriggered", "string"
 		attribute "refreshTriggered", "string"
 		attribute "customswitch", "string"
@@ -180,6 +181,10 @@ def refresh() {
 	runCmd(FullCommand)
 }
 def poll() {
+	refresh()
+}
+def ping() {
+    log.debug "ping()"
 	refresh()
 }
 def on() {
