@@ -356,7 +356,7 @@ def parse(String description) {
 				if (line.contains('CustomTriggerOff=Failed : Authentication Required!')) { jsonlist.put ("CustomTriggerOff", "Authentication Required!") }
 				if (line.contains('CustomPinStatus=1')) { jsonlist.put ("CustomPinStatus".replace("=",""), 1) }
 				if (line.contains('CustomPinStatus=0')) { jsonlist.put ("CustomPinStatus".replace("=",""), 0) }
-				if (DeviceSensorInvert = false) { 
+				if (DeviceSensorInvert == false) { 
 					if (line.contains('Contact Sensor=Open')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Open") }
 					if (line.contains('Contact Sensor=Closed')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Closed") }
 				} else {
