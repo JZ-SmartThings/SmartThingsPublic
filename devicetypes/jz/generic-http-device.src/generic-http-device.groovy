@@ -22,10 +22,10 @@ metadata {
 		capability "Polling"
 		capability "Refresh"
 		capability "Health Check"
-		attribute "mainTriggered", "string"
-		attribute "refreshTriggered", "string"
+		//attribute "mainTriggered", "string"
+		//attribute "refreshTriggered", "string"
 		attribute "customswitch", "string"
-		attribute "customTriggered", "string"
+		//attribute "customTriggered", "string"
 		attribute "customTriggeredEPOCH", "number"
 		attribute "cpuUsage", "string"
 		attribute "spaceUsed", "string"
@@ -52,8 +52,8 @@ metadata {
 		input("DeviceMainPin", "number", title:'Main Pin Number in BCM Format', description: 'Empty assumes pin #4.', required: false, displayDuringSetup: false)
 		input("DeviceCustomMomentary", "bool", title:"CustomTrigger is Momentary?", description: "", defaultValue: true, required: false, displayDuringSetup: true)
 		input("DeviceCustomPin", "number", title:'Custom Pin Number in BCM Format', description: 'Empty assumes pin #21.', required: false, displayDuringSetup: false)
-		input("DeviceSensorInvert", "bool", title:"Invert open/closed states on primary contact sensor?", description: "", defaultValue: false, required: false, displayDuringSetup: false)	
-		//input("DeviceSensor2Invert", "bool", title:"Invert open/closed states on secondary contact sensor??", description: "", defaultValue: false, required: false, displayDuringSetup: false)	
+		input("DeviceSensorInvert", "bool", title:"Invert open/closed states on the primary contact sensor?", description: "", defaultValue: false, required: false, displayDuringSetup: false)	
+		input("DeviceSensor2Invert", "bool", title:"Invert open/closed states on the secondary contact sensor?", description: "", defaultValue: false, required: false, displayDuringSetup: false)	
 		input("UseJSON", "bool", title:"Use JSON instead of HTML?", description: "", defaultValue: false, required: false, displayDuringSetup: true)
 		section() {
 			input("HTTPAuth", "bool", title:"Requires User Auth?", description: "Choose if the HTTP requires basic authentication", defaultValue: false, required: true, displayDuringSetup: true)
@@ -85,7 +85,14 @@ metadata {
 			state "on", label: 'ON', action: "CustomTrigger", icon: "st.Lighting.light11", backgroundColor: "#FF6600", nextState: "trying"
 			state "trying", label: 'TRYING', action: "ResetTiles", icon: "st.Lighting.light11", backgroundColor: "#FFAA33"
 		}
-		valueTile("sensorTriggered", "device.sensorTriggered", width: 5, height: 1, decoration: "flat") {
+		valueTile("sensorTriggered", "device.sensorTriggered", width: 3, height: 1, decoration: "flat") {
+			state("default", label: 'Sensor State Changed:\r\n${currentValue}', backgroundColor:"#ffffff")
+		}
+		standardTile("contact", "device.contact", width: 1, height: 1, decoration: "flat") {
+			state "open", label: '${name}', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
+			state "closed", label: '${name}', icon: "st.contact.contact.closed", backgroundColor: "#79b821"
+		}
+		valueTile("sensorTriggered", "device.sensorTriggered", width: 3, height: 1, decoration: "flat") {
 			state("default", label: 'Sensor State Changed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
 		standardTile("contact", "device.contact", width: 1, height: 1, decoration: "flat") {
@@ -168,7 +175,7 @@ metadata {
 			state "rebooting", label: 'REBOOTING', action: "ResetTiles", icon: "st.Office.office13", backgroundColor: "#FF6600", nextState: "default"
 		}
 		main "DeviceTrigger"
-		details(["displayName","mainTriggered", "DeviceTrigger", "customTriggered", "CustomTrigger", "sensorTriggered", "contact", "refreshTriggered", "RefreshTrigger", "cpuUsage", "cpuTemp", "upTime", "spaceUsed", "freeMem", "clearTiles", "temperature", "humidity" , "RebootNow"])
+		details(["displayName","mainTriggered", "DeviceTrigger", "customTriggered", "CustomTrigger", "sensorTriggered", "sensor2Triggered", "refreshTriggered", "RefreshTrigger", "cpuUsage", "cpuTemp", "upTime", "spaceUsed", "freeMem", "clearTiles", "temperature", "humidity" , "RebootNow"])
 	}
 }
 
