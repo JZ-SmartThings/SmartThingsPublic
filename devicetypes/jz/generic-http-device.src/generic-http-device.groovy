@@ -86,14 +86,14 @@ metadata {
 			state "trying", label: 'TRYING', action: "ResetTiles", icon: "st.Lighting.light11", backgroundColor: "#FFAA33"
 		}
 		valueTile("sensorTriggered", "device.sensorTriggered", width: 3, height: 1, decoration: "flat") {
-			state("default", label: 'Sensor State Changed:\r\n${currentValue}', backgroundColor:"#ffffff")
+			state("default", label: 'Sensor 1 State Changed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
 		standardTile("contact", "device.contact", width: 1, height: 1, decoration: "flat") {
 			state "open", label: '${name}', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
 			state "closed", label: '${name}', icon: "st.contact.contact.closed", backgroundColor: "#79b821"
 		}
 		valueTile("sensor2Triggered", "device.sensorTriggered", width: 3, height: 1, decoration: "flat") {
-			state("default", label: 'Sensor State Changed:\r\n${currentValue}', backgroundColor:"#ffffff")
+			state("default", label: 'Sensor 2 State Changed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
 		standardTile("contact2", "device.contact2", width: 1, height: 1, decoration: "flat") {
 			state "open", label: '${name}', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
@@ -472,11 +472,11 @@ def parse(String description) {
 			whichTile = 'mainoff'
 		}
 		if (jsonlist."SensorPinStatus"=="Open") {
-			if (device.currentState("contact").getValue()=="closed") { sendEvent(name: "sensorTriggered", value: "OPEN @ " + jsonlist."Date", unit: "") }
+			if (device.currentState("contact").getValue()=="closed") { sendEvent(name: "sensorTriggered", value: "OPEN @ \n" + jsonlist."Date", unit: "") }
 			sendEvent(name: "contact", value: "open", descriptionText: "$device.displayName is open")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		} else if (jsonlist."SensorPinStatus"=="Closed") {
-			if (device.currentState("contact").getValue()=="open") { sendEvent(name: "sensorTriggered", value: "CLOSED @ " + jsonlist."Date", unit: "") }
+			if (device.currentState("contact").getValue()=="open") { sendEvent(name: "sensorTriggered", value: "CLOSED @ \n" + jsonlist."Date", unit: "") }
 			sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName is closed")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		} else {
