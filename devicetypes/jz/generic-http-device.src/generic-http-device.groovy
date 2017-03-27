@@ -92,10 +92,10 @@ metadata {
 			state "open", label: '${name}', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
 			state "closed", label: '${name}', icon: "st.contact.contact.closed", backgroundColor: "#79b821"
 		}
-		valueTile("sensorTriggered", "device.sensorTriggered", width: 3, height: 1, decoration: "flat") {
+		valueTile("sensor2Triggered", "device.sensorTriggered", width: 3, height: 1, decoration: "flat") {
 			state("default", label: 'Sensor State Changed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
-		standardTile("contact", "device.contact", width: 1, height: 1, decoration: "flat") {
+		standardTile("contact2", "device.contact2", width: 1, height: 1, decoration: "flat") {
 			state "open", label: '${name}', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
 			state "closed", label: '${name}', icon: "st.contact.contact.closed", backgroundColor: "#79b821"
 		}
