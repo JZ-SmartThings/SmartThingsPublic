@@ -33,7 +33,7 @@ metadata {
 			state("default", label: 'Sensor 2 State Changed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
 		main "contact"
-		details "contact"
+		details "contact","sensor2Triggered"
 	}
 }
 
