@@ -1,5 +1,5 @@
 /**
- *  Generic HTTP Device v1.0.20170326
+ *  Generic HTTP Device v1.0.20170327
  *  Source code can be found here: https://github.com/JZ-SmartThings/SmartThings/blob/master/Devices/Generic%20HTTP%20Device/GenericHTTPDevice.groovy
  *  Copyright 2017 JZ
  *
@@ -36,6 +36,7 @@ metadata {
 		attribute "humidity", "string"
 		attribute "contact2", "string"
 		attribute "sensor2Triggered", "string"
+		attribute "sensorTriggered", "string"
 		command "DeviceTrigger"
 		command "RefreshTrigger"
 		command "CustomTrigger"
