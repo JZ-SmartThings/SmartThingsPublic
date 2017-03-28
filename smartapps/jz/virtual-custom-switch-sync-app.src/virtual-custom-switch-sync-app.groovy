@@ -22,28 +22,13 @@ definition(
 preferences {
 	section("Choose your Generic HTTP Device Handler:") {
 		input ("httpswitch", "capability.switch", title: "HTTP Device?", multiple: false, required: true)
-			if(httpswitch != null){
-			  paragraph "Device Handler: $httpswitch.typeName\r\n\r\nDetected Number of Endpoints: ${getEndpoints()}\r\n\r\nRecommended Type: ${getType()}"
-			  input "virtualSwitchType", "enum", title: "Virtual Switch Type", value: getType() , multiple: false, required: true, options: ["Switch","Contact Sensor"]
-			  app.updateSetting("virtualSwitchType", getType())
-			}
 	}
 	section("Choose your Simulated, currently unlinked switch:") {
-		input ("virtualswitch", "capability.switch", title: "Virtual Switch?", multiple: false, required: true)
+		input ("virtualswitch", "capability.switch", title: "Virtual Switch?", multiple: false, required: false)
 	}
-}
-
-
-private getType() {
-   String hasCapability = ""
-
-   if (httpswitch.hasCapability("Switch")) {
-      hasCapability = "Switch"
-   }
-   if ((httpswitch.hasCapability("Contact Sensor")) || (httpswitch.hasCapability("Sensor"))) {
-      hasCapability = "Contact Sensor"
-   }
-    return hasCapability
+	section("Choose your Simulated, currently unlinked Contact Sensor:") {
+		input ("virtualsensor", "capability.contact", title: "Virtual Contact Sensor?", multiple: false, required: false)
+	}
 }
 
 def installed() {
