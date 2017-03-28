@@ -1,5 +1,5 @@
 /**
- *  Virtual 2nd Contact Sensor v1.0.20170227
+ *  Virtual 2nd Contact Sensor v1.0.20170327
  *  Copyright 2017 JZ
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -10,7 +10,6 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 metadata {
-	// Automatically generated. Make future change here.
 	definition (name: "Virtual 2nd Contact Sensor", namespace: "JZ", author: "JZ") {
 		capability "Contact Sensor"
 		capability "Sensor"
@@ -18,12 +17,10 @@ metadata {
 		command "open"
 		command "close"
 	}
-
 	simulator {
 		status "open": "contact:open"
 		status "closed": "contact:closed"
 	}
-
 	tiles {
 		standardTile("contact", "device.contact", width: 3, height: 2) {
 			state("closed", label:'${name}', icon:"st.contact.contact.closed", backgroundColor:"#00A0DC", action: "open")

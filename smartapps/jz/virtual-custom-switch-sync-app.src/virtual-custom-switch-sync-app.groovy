@@ -1,5 +1,5 @@
 /**
- *  Virtual Custom Switch Sync App v1.0.20170227
+ *  Virtual Custom Switch Sync App v1.0.20170327
  *  Copyright 2017 JZ
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
