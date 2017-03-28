@@ -92,7 +92,7 @@ metadata {
 			state "open", label: '${name}', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
 			state "closed", label: '${name}', icon: "st.contact.contact.closed", backgroundColor: "#79b821"
 		}
-		valueTile("sensor2Triggered", "device.sensorTriggered", width: 3, height: 1, decoration: "flat") {
+		valueTile("sensor2Triggered", "device.sensor2Triggered", width: 3, height: 1, decoration: "flat") {
 			state("default", label: 'Sensor 2 State Changed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
 		standardTile("contact2", "device.contact2", width: 1, height: 1, decoration: "flat") {
@@ -241,6 +241,7 @@ def ClearTiles() {
 	sendEvent(name: "customTriggered", value: "", unit: "")
 	sendEvent(name: "refreshTriggered", value: "", unit: "")
 	sendEvent(name: "sensorTriggered", value: "", unit: "")
+	sendEvent(name: "sensor2Triggered", value: "", unit: "")
 	sendEvent(name: "cpuUsage", value: "", unit: "")
 	sendEvent(name: "cpuTemp", value: "", unit: "")
 	sendEvent(name: "spaceUsed", value: "", unit: "")
@@ -375,6 +376,13 @@ def parse(String description) {
 					if (line.contains('Contact Sensor=Open')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Closed") }
 					if (line.contains('Contact Sensor=Closed')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Open") }
 				}
+				if (DeviceSensor2Invert == false) { 
+					if (line.contains('Contact Sensor 2=Open')) { jsonlist.put ("Sensor2PinStatus".replace("=",""), "Open") }
+					if (line.contains('Contact Sensor 2=Closed')) { jsonlist.put ("Sensor2PinStatus".replace("=",""), "Closed") }
+				} else {
+					if (line.contains('Contact Sensor 2=Open')) { jsonlist.put ("Sensor2PinStatus".replace("=",""), "Closed") }
+					if (line.contains('Contact Sensor 2=Closed')) { jsonlist.put ("Sensor2PinStatus".replace("=",""), "Open") }
+				}
 				if (line.contains('Refresh=Success')) { jsonlist.put ("Refresh", "Success") }
 				if (line.contains('Refresh=Failed : Authentication Required!')) { jsonlist.put ("Refresh", "Authentication Required!") }
 				if (line.contains('RebootNow=Success')) { jsonlist.put ("RebootNow", "Success") }
@@ -472,15 +480,27 @@ def parse(String description) {
 			whichTile = 'mainoff'
 		}
 		if (jsonlist."SensorPinStatus"=="Open") {
-			if (device.currentState("contact").getValue()=="closed") { sendEvent(name: "sensorTriggered", value: "OPEN @ \n" + jsonlist."Date", unit: "") }
+			if (device.currentState("contact").getValue()=="closed") { sendEvent(name: "sensorTriggered", value: "OPEN @ " + jsonlist."Date", unit: "") }
 			sendEvent(name: "contact", value: "open", descriptionText: "$device.displayName is open")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		} else if (jsonlist."SensorPinStatus"=="Closed") {
-			if (device.currentState("contact").getValue()=="open") { sendEvent(name: "sensorTriggered", value: "CLOSED @ \n" + jsonlist."Date", unit: "") }
+			if (device.currentState("contact").getValue()=="open") { sendEvent(name: "sensorTriggered", value: "CLOSED @ " + jsonlist."Date", unit: "") }
 			sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName is closed")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		} else {
 			sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName is closed")
+			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
+		}
+		if (jsonlist."Sensor2PinStatus"=="Open") {
+			if (device.currentState("contact2").getValue()=="closed") { sendEvent(name: "sensor2Triggered", value: "OPEN @ " + jsonlist."Date", unit: "") }
+			sendEvent(name: "contact2", value: "open", descriptionText: "$device.displayName is open")
+			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
+		} else if (jsonlist."Sensor2PinStatus"=="Closed") {
+			if (device.currentState("contact2").getValue()=="open") { sendEvent(name: "sensor2Triggered", value: "CLOSED @ " + jsonlist."Date", unit: "") }
+			sendEvent(name: "contact2", value: "closed", descriptionText: "$device.displayName is closed")
+			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
+		} else {
+			sendEvent(name: "contact2", value: "closed", descriptionText: "$device.displayName is closed")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		}
 		if (jsonlist."CPU") {
