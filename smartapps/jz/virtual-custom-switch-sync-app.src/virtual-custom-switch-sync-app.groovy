@@ -1,5 +1,5 @@
 /**
- *  Virtual Custom Switch Sync App v1.0.20170327
+ *  Virtual Custom Switch Sync App v1.0.20170328
  *  Copyright 2017 JZ
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -51,14 +51,17 @@ def initialize() {
 def switchOffHandler(evt) {
 	//log.debug "$httpswitch.name was turned " + httpswitch*.currentValue("customswitch")
 	log.debug "switchOffHandler called with event: deviceId ${evt.deviceId} name:${evt.name} source:${evt.source} value:${evt.value} isStateChange: ${evt.isStateChange()} isPhysical: ${evt.isPhysical()} isDigital: ${evt.isDigital()} data: ${evt.data} device: ${evt.device}"
-   	sendEvent(settings["virtualswitch"], [name:"switch", value:"$evt.value"])
-	runIn(1,sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]]))
+
+	// TRYING VALUE OF customswitch FROM HTTP DEVICE RATHER THAN $evt.value
+   	//sendEvent(settings["virtualswitch"], [name:"switch", value:"$evt.value"])
+	runIn(1,sendEvent(settings["virtualswitch"], [name:"switch", value:httpswitch*.currentValue("customswitch")[0]]))
+	sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]])
 }
 def virtualSwitchHandler(evt) {
 	log.debug "virtualSwitchHandler called with event: deviceId ${evt.deviceId} name:${evt.name} source:${evt.source} value:${evt.value} isStateChange: ${evt.isStateChange()} isPhysical: ${evt.isPhysical()} isDigital: ${evt.isDigital()} data: ${evt.data} device: ${evt.device}"
 	if (now()-httpswitch*.currentValue("customTriggeredEPOCH")[0] > 3000) {
-		runIn(1,httpswitch.off())
-		runIn(1,sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]]))
+		httpswitch.off()
+		sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]])
 	}
 }
 def virtualSensorHandler(evt) {
