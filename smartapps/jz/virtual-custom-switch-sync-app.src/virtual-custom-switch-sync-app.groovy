@@ -44,6 +44,7 @@ def updated() {
 
 def initialize() {
 	subscribe(httpswitch, "customswitch", switchOffHandler)
+	subscribe(httpswitch, "contact2", virtualSensorHandler)
 	subscribe(virtualswitch, "switch", virtualSwitchHandler)
 }
 
@@ -57,4 +58,8 @@ def virtualSwitchHandler(evt) {
 	if (now()-httpswitch*.currentValue("customTriggeredEPOCH")[0] > 3000) {
 		httpswitch.off()
 	}
+}
+def virtualSensorHandler(evt) {
+	log.debug "virtualSensorHandler called with event: deviceId ${evt.deviceId} name:${evt.name} source:${evt.source} value:${evt.value} isStateChange: ${evt.isStateChange()} isPhysical: ${evt.isPhysical()} isDigital: ${evt.isDigital()} data: ${evt.data} device: ${evt.device}"
+   	sendEvent(settings["virtualsensor"], [name:"contact", value:"$evt.value"])
 }
