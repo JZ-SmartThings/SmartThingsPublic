@@ -34,6 +34,7 @@ metadata {
 		attribute "freeMem", "string"
 		attribute "temperature", "string"
 		attribute "humidity", "string"
+		attribute "contact2", "string"
 		command "DeviceTrigger"
 		command "RefreshTrigger"
 		command "CustomTrigger"
