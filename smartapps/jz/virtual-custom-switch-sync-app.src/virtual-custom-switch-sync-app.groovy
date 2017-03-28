@@ -64,4 +64,5 @@ def virtualSwitchHandler(evt) {
 def virtualSensorHandler(evt) {
 	log.debug "virtualSensorHandler called with event: deviceId ${evt.deviceId} name:${evt.name} source:${evt.source} value:${evt.value} isStateChange: ${evt.isStateChange()} isPhysical: ${evt.isPhysical()} isDigital: ${evt.isDigital()} data: ${evt.data} device: ${evt.device}"
    	sendEvent(settings["virtualsensor"], [name:"contact", value:"$evt.value"])
+	sendEvent(settings["virtualsensor"], [name:"sensor2Triggered", value:httpswitch*.currentValue("sensor2Triggered")[0]])
 }

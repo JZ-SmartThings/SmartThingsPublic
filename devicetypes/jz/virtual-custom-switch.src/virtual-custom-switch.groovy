@@ -12,7 +12,6 @@
 metadata {
 	definition (name: "Virtual Custom Switch", namespace: "JZ", author: "JZ") {
 		capability "Switch"
-		attribute "customTriggered", "string"
 		
 		command "onPhysical"
 		command "offPhysical"
