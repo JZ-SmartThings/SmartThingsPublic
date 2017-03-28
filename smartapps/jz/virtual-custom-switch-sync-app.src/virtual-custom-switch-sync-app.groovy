@@ -23,7 +23,7 @@ preferences {
 	section("Choose your Generic HTTP Device Handler:") {
 		input ("httpswitch", "capability.switch", title: "HTTP Device?", multiple: false, required: true)
 	}
-	section("Choose your Simulated, currently unlinked switch:") {
+	section("Choose your Simulated, currently unlinked Switch:") {
 		input ("virtualswitch", "capability.switch", title: "Virtual Switch?", multiple: false, required: false)
 	}
 	section("Choose your Simulated, currently unlinked Contact Sensor:") {
@@ -51,14 +51,14 @@ def initialize() {
 def switchOffHandler(evt) {
 	//log.debug "$httpswitch.name was turned " + httpswitch*.currentValue("customswitch")
 	log.debug "switchOffHandler called with event: deviceId ${evt.deviceId} name:${evt.name} source:${evt.source} value:${evt.value} isStateChange: ${evt.isStateChange()} isPhysical: ${evt.isPhysical()} isDigital: ${evt.isDigital()} data: ${evt.data} device: ${evt.device}"
-   	sendEvent(settings["virtualswitch"], [name:"switch", value:"$evt.value"])
-	sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]])
+   	runIn(1,sendEvent(settings["virtualswitch"], [name:"switch", value:"$evt.value"]))
+	runIn(1,sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]]))
 }
 def virtualSwitchHandler(evt) {
 	log.debug "virtualSwitchHandler called with event: deviceId ${evt.deviceId} name:${evt.name} source:${evt.source} value:${evt.value} isStateChange: ${evt.isStateChange()} isPhysical: ${evt.isPhysical()} isDigital: ${evt.isDigital()} data: ${evt.data} device: ${evt.device}"
 	if (now()-httpswitch*.currentValue("customTriggeredEPOCH")[0] > 3000) {
 		httpswitch.off()
-		sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]])
+		runIn(1,sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]]))
 	}
 }
 def virtualSensorHandler(evt) {
