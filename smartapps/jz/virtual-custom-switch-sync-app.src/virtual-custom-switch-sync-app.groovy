@@ -68,6 +68,7 @@ def virtualSwitchHandler(evt) {
 }
 
 def updateVirtualSwitch() {
+	log.debug "updateVirtualSwitch to ${httpswitch*.currentValue('customswitch')[0]}"
 	sendEvent(settings["virtualswitch"], [name:"switch", value:httpswitch*.currentValue("customswitch")[0]])
 }
 
