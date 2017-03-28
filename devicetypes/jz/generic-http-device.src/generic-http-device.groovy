@@ -35,6 +35,7 @@ metadata {
 		attribute "temperature", "string"
 		attribute "humidity", "string"
 		attribute "contact2", "string"
+		attribute "sensor2Triggered", "string"
 		command "DeviceTrigger"
 		command "RefreshTrigger"
 		command "CustomTrigger"
