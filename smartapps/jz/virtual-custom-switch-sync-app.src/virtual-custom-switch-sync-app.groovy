@@ -27,7 +27,7 @@ preferences {
 		input ("virtualswitch", "capability.switch", title: "Virtual Switch?", multiple: false, required: false)
 	}
 	section("Choose your Simulated, currently unlinked Contact Sensor:") {
-		input ("virtualsensor", "capability.contact", title: "Virtual Contact Sensor?", multiple: false, required: false)
+		input ("virtualsensor", "capability.sensor", title: "Virtual Contact Sensor?", multiple: false, required: false)
 	}
 }
 
