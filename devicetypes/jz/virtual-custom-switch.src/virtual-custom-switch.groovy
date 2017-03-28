@@ -34,6 +34,7 @@ metadata {
 		}
 
         main "switch"
+		details(["switch","on","off","customTriggered"])
 	}
 }
 
