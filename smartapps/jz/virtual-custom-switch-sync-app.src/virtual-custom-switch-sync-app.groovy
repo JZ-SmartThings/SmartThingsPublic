@@ -54,7 +54,7 @@ def switchOffHandler(evt) {
 
 	// TRYING VALUE OF customswitch FROM HTTP DEVICE RATHER THAN $evt.value
    	//sendEvent(settings["virtualswitch"], [name:"switch", value:"$evt.value"])
-	for (i = 1; i<=3; i++) { runIn(i,updateVirtualSwitch) }
+	for (int i = 1; i<=3; i++) { runIn(i,updateVirtualSwitch) }
 	sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]])
 }
 def virtualSwitchHandler(evt) {
@@ -63,7 +63,7 @@ def virtualSwitchHandler(evt) {
 		httpswitch.off()
 		sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]])
 	} else {
-		for (i = 1; i<=3; i++) { runIn(i,updateVirtualSwitch) }
+		for (int i = 1; i<=3; i++) { runIn(i,updateVirtualSwitch) }
 	}
 }
 
