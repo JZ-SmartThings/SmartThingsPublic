@@ -493,11 +493,15 @@ def parse(String description) {
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		}
 		if (jsonlist."Sensor2PinStatus"=="Open") {
-			if (device.currentState("contact2").getValue()=="closed") { sendEvent(name: "sensor2Triggered", value: "OPEN @ " + jsonlist."Date", unit: "") }
+			//if (device.currentState("contact2").getValue()=="closed") { 
+			sendEvent(name: "sensor2Triggered", value: "OPEN @ " + jsonlist."Date", unit: "")
+			//}
 			sendEvent(name: "contact2", value: "open", descriptionText: "$device.displayName is open")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		} else if (jsonlist."Sensor2PinStatus"=="Closed") {
-			if (device.currentState("contact2").getValue()=="open") { sendEvent(name: "sensor2Triggered", value: "CLOSED @ " + jsonlist."Date", unit: "") }
+			//if (device.currentState("contact2").getValue()=="open") { 
+			sendEvent(name: "sensor2Triggered", value: "CLOSED @ " + jsonlist."Date", unit: "")
+			//}
 			sendEvent(name: "contact2", value: "closed", descriptionText: "$device.displayName is closed")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 		} else {
