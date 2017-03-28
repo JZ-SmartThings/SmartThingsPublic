@@ -54,16 +54,18 @@ def switchOffHandler(evt) {
 
 	// TRYING VALUE OF customswitch FROM HTTP DEVICE RATHER THAN $evt.value
    	//sendEvent(settings["virtualswitch"], [name:"switch", value:"$evt.value"])
-	for (int i = 1; i<=3; i++) { runIn(i,updateVirtualSwitch) }
+	for (int i = 1; i<=2; i++) { runIn(i,updateVirtualSwitch) }
 	sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]])
 }
 def virtualSwitchHandler(evt) {
 	log.debug "virtualSwitchHandler called with event: deviceId ${evt.deviceId} name:${evt.name} source:${evt.source} value:${evt.value} isStateChange: ${evt.isStateChange()} isPhysical: ${evt.isPhysical()} isDigital: ${evt.isDigital()} data: ${evt.data} device: ${evt.device}"
-	if (now()-httpswitch*.currentValue("customTriggeredEPOCH")[0] > 3000) {
+	log.trace "EPOCH diff was: "
+	log.trace now()-httpswitch*.currentValue("customTriggeredEPOCH")[0]
+	if (now()-httpswitch*.currentValue("customTriggeredEPOCH")[0] > 5000) {
 		httpswitch.off()
 		sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]])
 	} else {
-		for (int i = 1; i<=3; i++) { runIn(i,updateVirtualSwitch) }
+		for (int i = 1; i<=2; i++) { runIn(i,updateVirtualSwitch) }
 	}
 }
 
