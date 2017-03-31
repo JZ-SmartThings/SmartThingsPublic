@@ -30,7 +30,7 @@ preferences {
 		input ("virtualsensor", "capability.sensor", title: "Virtual Contact Sensor?", multiple: false, required: false)
 	}
 	section("Refresh/Poll Interval in Minutes. 0/null turns it off (try not to run too often):") {
-		input ("refreshfreq", "number", title: "Refresh/Poll Frequency?", multiple: false, required: false)
+		input ("refreshfreq", "number", title: "Refresh/Poll Frequency in minutes?", multiple: false, required: false)
 	}
 }
 
@@ -51,9 +51,21 @@ def initialize() {
 	subscribe(virtualswitch, "switch", virtualSwitchHandler)
 	subscribe(httpswitch, "contact2", virtualSensorHandler)
 	if (refreshfreq > 0) {
-		schedule(now() + refreshfreq*1000*60, httpswitch.refresh())
+		schedule(now() + refreshfreq*1000*60, httpRefresh)
 	}
 }
+
+def httpRefresh() {
+	httpswitch.refresh()
+	log.debug "Refresh of " + settings["httpswitch"] + " triggered. Currently set to every " + refreshfreq + " minutes."
+	schedule(now() + refreshfreq*1000*60, httpRefresh)
+}
+def httpRefresh2() {
+	httpswitch.refresh()
+	log.debug "Refresh of " + settings["httpswitch"] + " triggered. Currently set to every " + refreshfreq + " minutes."
+	runOnce(now() + refreshfreq*1000*60, httpRefresh)
+}
+
 
 def switchOffHandler(evt) {
 	//log.debug "$httpswitch.name was turned " + httpswitch*.currentValue("customswitch")
