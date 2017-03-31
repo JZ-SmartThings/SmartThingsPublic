@@ -47,6 +47,7 @@ def updated() {
 }
 
 def initialize() {
+	subscribe(app, runApp)
 	subscribe(httpswitch, "off", switchOffHandler)
 	subscribe(virtualswitch, "switch", virtualSwitchHandler)
 	subscribe(httpswitch, "contact2", virtualSensorHandler)
@@ -55,6 +56,10 @@ def initialize() {
 	}
 }
 
+def runApp(evt) {
+	log.debug "Manual refresh of " + settings["httpswitch"] + " triggered. Currently set to every " + refreshfreq + " minutes."
+	httpswitch.refresh()
+}
 def httpRefresh() {
 	httpswitch.refresh()
 	log.debug "Refresh of " + settings["httpswitch"] + " triggered. Currently set to every " + refreshfreq + " minutes."
