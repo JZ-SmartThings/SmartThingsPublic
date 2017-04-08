@@ -92,6 +92,7 @@ def updateVirtualSwitch() {
 	log.debug "updateVirtualSwitch to ${httpswitch*.currentValue('customswitch')[0]}"
 	sendEvent(settings["virtualswitch"], [name:"switch", value:httpswitch*.currentValue("customswitch")[0]])
 	//sendEvent(settings["virtualswitch"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
+	updateRefreshTiles()
 }
 
 def virtualSensorHandler(evt) {
@@ -99,6 +100,7 @@ def virtualSensorHandler(evt) {
    	sendEvent(settings["virtualsensor"], [name:"contact", value:"$evt.value"])
 	sendEvent(settings["virtualsensor"], [name:"sensor2Triggered", value:httpswitch*.currentValue("sensor2Triggered")[0]])
 	//sendEvent(settings["virtualsensor"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
+	updateRefreshTiles()
 }
 
 def updateRefreshTiles() {
