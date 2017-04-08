@@ -1,5 +1,5 @@
 /**
- *  Virtual 2nd Contact Sensor v1.0.20170407
+ *  Virtual 2nd Contact Sensor v1.0.20170408
  *  Copyright 2017 JZ
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except

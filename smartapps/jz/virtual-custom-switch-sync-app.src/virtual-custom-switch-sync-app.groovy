@@ -1,5 +1,5 @@
 /**
- *  Virtual Custom Switch Sync App v1.0.20170330
+ *  Virtual Custom Switch Sync App v1.0.20170408
  *  Copyright 2017 JZ
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -51,7 +51,7 @@ def initialize() {
 	subscribe(httpswitch, "off", switchOffHandler)
 	subscribe(virtualswitch, "switch", virtualSwitchHandler)
 	subscribe(httpswitch, "contact2", virtualSensorHandler)
-	subscribe(httpswitch, "refresh", updateRefreshTiles)
+	subscribeToCommand(httpswitch, "refresh", updateRefreshTiles)
 	if (refreshfreq > 0) {
 		schedule(now() + refreshfreq*1000*60, httpRefresh)
 	}
@@ -66,6 +66,7 @@ def httpRefresh() {
 	httpswitch.refresh()
 	log.debug "Auto refresh of " + settings["httpswitch"] + " triggered. Currently set to refresh every " + refreshfreq + " minutes."
 	schedule(now() + refreshfreq*1000*60, httpRefresh)
+	updateRefreshTiles()
 }
 
 def switchOffHandler(evt) {
@@ -106,6 +107,10 @@ def virtualSensorHandler(evt) {
 
 def updateRefreshTiles() {
 	log.debug "Updating REFRESH tiles"
+	schedule(now() + 3000, updateRefreshEvents)
+}
+
+def updateRefreshEvents() {
 	if (settings["virtualswitch"]) { sendEvent(settings["virtualswitch"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]]) }
 	if (settings["virtualsensor"]) { sendEvent(settings["virtualsensor"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]]) }
 }
