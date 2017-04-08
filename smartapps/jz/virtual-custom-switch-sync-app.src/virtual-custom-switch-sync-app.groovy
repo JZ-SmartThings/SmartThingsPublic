@@ -51,7 +51,7 @@ def initialize() {
 	subscribe(httpswitch, "off", switchOffHandler)
 	subscribe(virtualswitch, "switch", virtualSwitchHandler)
 	subscribe(httpswitch, "contact2", virtualSensorHandler)
-	subscribeToCommand(httpswitch, "refresh", updateRefreshTiles)
+	subscribe(httpswitch, "refreshTriggered", updateRefreshTiles)
 	if (refreshfreq > 0) {
 		schedule(now() + refreshfreq*1000*60, httpRefresh)
 	}
@@ -60,6 +60,7 @@ def initialize() {
 def runApp(evt) {
 	log.debug "Manual refresh of " + settings["httpswitch"] + " triggered. Currently set to refresh every " + refreshfreq + " minutes."
 	httpswitch.refresh()
+	updateRefreshTiles()
 }
 def httpRefresh() {
 	httpswitch.refresh()
@@ -82,7 +83,7 @@ def virtualSwitchHandler(evt) {
 	if (now()-httpswitch*.currentValue("customTriggeredEPOCH")[0] > 5000) {
 		httpswitch.off()
 		sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]])
-		sendEvent(settings["virtualswitch"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
+		updateRefreshTiles()
 	} else {
 		for (int i = 1; i<=2; i++) { runIn(i,updateVirtualSwitch) }
 	}
