@@ -106,5 +106,5 @@ def virtualSensorHandler(evt) {
 def updateRefreshTiles() {
 	log.debug "Updating REFRESH tiles"
 	if (settings["virtualswitch"]) { sendEvent(settings["virtualswitch"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]]) }
-	if (settings["virtualsensor"]) { sendEvent(settings["virtualsensor"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
+	if (settings["virtualsensor"]) { sendEvent(settings["virtualsensor"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]]) }
 }
