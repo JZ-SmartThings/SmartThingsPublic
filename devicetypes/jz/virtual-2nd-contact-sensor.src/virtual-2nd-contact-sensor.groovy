@@ -48,10 +48,10 @@ def parse(description) {
 
 def open() {
 	log.trace "open()"
-	sendEvent(name: "contact", value: "open")
+	//sendEvent(name: "contact", value: "open")
 }
 
 def close() {
 	log.trace "close()"
-    sendEvent(name: "contact", value: "closed")
+    //sendEvent(name: "contact", value: "closed")
 }
