@@ -51,7 +51,7 @@ def initialize() {
 	subscribe(httpswitch, "off", switchOffHandler)
 	subscribe(virtualswitch, "switch", virtualSwitchHandler)
 	subscribe(httpswitch, "contact2", virtualSensorHandler)
-	subscribe(httpswitch, "refreshTriggered", updateRefreshTiles)
+	subscribe(httpswitch, "refresh", updateRefreshTiles)
 	if (refreshfreq > 0) {
 		schedule(now() + refreshfreq*1000*60, httpRefresh)
 	}
