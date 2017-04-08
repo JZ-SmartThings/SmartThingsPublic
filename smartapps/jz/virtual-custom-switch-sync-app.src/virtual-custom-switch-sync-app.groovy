@@ -81,6 +81,7 @@ def virtualSwitchHandler(evt) {
 	if (now()-httpswitch*.currentValue("customTriggeredEPOCH")[0] > 5000) {
 		httpswitch.off()
 		sendEvent(settings["virtualswitch"], [name:"customTriggered", value:httpswitch*.currentValue("customTriggered")[0]])
+		sendEvent(settings["virtualswitch"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
 	} else {
 		for (int i = 1; i<=2; i++) { runIn(i,updateVirtualSwitch) }
 	}
@@ -89,10 +90,12 @@ def virtualSwitchHandler(evt) {
 def updateVirtualSwitch() {
 	log.debug "updateVirtualSwitch to ${httpswitch*.currentValue('customswitch')[0]}"
 	sendEvent(settings["virtualswitch"], [name:"switch", value:httpswitch*.currentValue("customswitch")[0]])
+	sendEvent(settings["virtualswitch"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
 }
 
 def virtualSensorHandler(evt) {
 	log.debug "virtualSensorHandler called with event: deviceId ${evt.deviceId} name:${evt.name} source:${evt.source} value:${evt.value} isStateChange: ${evt.isStateChange()} isPhysical: ${evt.isPhysical()} isDigital: ${evt.isDigital()} data: ${evt.data} device: ${evt.device}"
    	sendEvent(settings["virtualsensor"], [name:"contact", value:"$evt.value"])
 	sendEvent(settings["virtualsensor"], [name:"sensor2Triggered", value:httpswitch*.currentValue("sensor2Triggered")[0]])
+	sendEvent(settings["virtualswitch"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
 }
