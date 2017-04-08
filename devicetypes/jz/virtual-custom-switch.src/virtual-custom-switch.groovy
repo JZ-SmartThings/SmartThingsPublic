@@ -1,5 +1,5 @@
 /**
- *  Virtual Custom Switch v1.0.20170327
+ *  Virtual Custom Switch v1.0.20170407
  *  Copyright 2017 JZ
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -25,9 +25,15 @@ metadata {
 		valueTile("customTriggered", "device.customTriggered", width: 3, height: 1, decoration: "flat") {
 			state("default", label: 'Custom triggered:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
-
+		valueTile("refreshTriggered", "device.refreshTriggered", width: 2, height: 1, decoration: "flat") {
+			state("default", label: 'Refreshed:\r\n${currentValue}', backgroundColor:"#ffffff")
+		}
+		standardTile("RefreshTrigger", "device.refreshswitch", width: 1, height: 1, decoration: "flat") {
+			state "default", label:'REFRESH', action: "refresh.refresh", icon: "st.secondary.refresh-icon", backgroundColor:"#53a7c0", nextState: "refreshing"
+			state "refreshing", label: 'REFRESHING', action: "refresh.refresh", icon: "st.secondary.refresh-icon", backgroundColor: "#FF6600", nextState: "default"
+		}
         main "switch"
-		details(["switch","on","off","customTriggered"])
+		details(["switch","on","off","customTriggered","refreshTriggered","RefreshTrigger"])
 	}
 }
 

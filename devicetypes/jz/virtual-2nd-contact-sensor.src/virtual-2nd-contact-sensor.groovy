@@ -29,8 +29,15 @@ metadata {
 		valueTile("sensor2Triggered", "device.sensor2Triggered", width: 3, height: 1, decoration: "flat") {
 			state("default", label: 'Sensor 2 State Changed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
+		valueTile("refreshTriggered", "device.refreshTriggered", width: 2, height: 1, decoration: "flat") {
+			state("default", label: 'Refreshed:\r\n${currentValue}', backgroundColor:"#ffffff")
+		}
+		standardTile("RefreshTrigger", "device.refreshswitch", width: 1, height: 1, decoration: "flat") {
+			state "default", label:'REFRESH', action: "refresh.refresh", icon: "st.secondary.refresh-icon", backgroundColor:"#53a7c0", nextState: "refreshing"
+			state "refreshing", label: 'REFRESHING', action: "refresh.refresh", icon: "st.secondary.refresh-icon", backgroundColor: "#FF6600", nextState: "default"
+		}
 		main "contact"
-		details "contact","sensor2Triggered"
+		details (["contact","sensor2Triggered","refreshTriggered","RefreshTrigger"])
 	}
 }
 
