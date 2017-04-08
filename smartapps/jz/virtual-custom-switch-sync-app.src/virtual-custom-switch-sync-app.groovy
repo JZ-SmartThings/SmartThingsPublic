@@ -51,6 +51,7 @@ def initialize() {
 	subscribe(httpswitch, "off", switchOffHandler)
 	subscribe(virtualswitch, "switch", virtualSwitchHandler)
 	subscribe(httpswitch, "contact2", virtualSensorHandler)
+	subscribe(httpswitch, "refreshTriggered", updateRefreshTiles)
 	if (refreshfreq > 0) {
 		schedule(now() + refreshfreq*1000*60, httpRefresh)
 	}
@@ -90,12 +91,17 @@ def virtualSwitchHandler(evt) {
 def updateVirtualSwitch() {
 	log.debug "updateVirtualSwitch to ${httpswitch*.currentValue('customswitch')[0]}"
 	sendEvent(settings["virtualswitch"], [name:"switch", value:httpswitch*.currentValue("customswitch")[0]])
-	sendEvent(settings["virtualswitch"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
+	//sendEvent(settings["virtualswitch"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
 }
 
 def virtualSensorHandler(evt) {
 	log.debug "virtualSensorHandler called with event: deviceId ${evt.deviceId} name:${evt.name} source:${evt.source} value:${evt.value} isStateChange: ${evt.isStateChange()} isPhysical: ${evt.isPhysical()} isDigital: ${evt.isDigital()} data: ${evt.data} device: ${evt.device}"
    	sendEvent(settings["virtualsensor"], [name:"contact", value:"$evt.value"])
 	sendEvent(settings["virtualsensor"], [name:"sensor2Triggered", value:httpswitch*.currentValue("sensor2Triggered")[0]])
-	sendEvent(settings["virtualswitch"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
+	//sendEvent(settings["virtualsensor"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
+}
+
+def updateRefreshTiles() {
+	if (settings["virtualswitch"]) { sendEvent(settings["virtualswitch"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]]) }
+	if (settings["virtualsensor"]) { sendEvent(settings["virtualsensor"], [name:"refreshTriggered", value:httpswitch*.currentValue("refreshTriggered")[0]])
 }
