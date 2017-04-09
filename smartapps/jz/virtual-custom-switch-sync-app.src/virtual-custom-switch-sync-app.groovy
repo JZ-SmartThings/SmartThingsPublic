@@ -47,17 +47,23 @@ def updated() {
 }
 
 def initialize() {
-	subscribe(app, runApp)
-	subscribe(httpswitch, "customswitch", switchOffHandler)
-	subscribe(virtualswitch, "switch", virtualSwitchHandler)
-	subscribe(httpswitch, "contact2", virtualSensorHandler)
-    subscribe(httpswitch, "customTriggered", updateCustomTriggered)
-	subscribe(httpswitch, "refreshTriggered", updateRefreshTiles)
-	subscribeToCommand(virtualswitch, "refresh", callRefresh)
-	subscribeToCommand(virtualsensor, "refresh", callRefresh)
-	if (refreshfreq > 0) {
-		schedule(now() + refreshfreq*1000*60, httpRefresh)
-	}
+	if (httpswitch) {
+        subscribe(app, runApp)
+        subscribe(httpswitch, "refreshTriggered", updateRefreshTiles)
+    }
+	if (virtualswitch) {
+		subscribe(virtualswitch, "switch", virtualSwitchHandler)
+        subscribe(httpswitch, "customswitch", switchOffHandler)
+        subscribe(httpswitch, "customTriggered", updateCustomTriggered)
+		subscribeToCommand(virtualswitch, "refresh", callRefresh)
+    }
+	if (virtualsensor) {
+        subscribe(httpswitch, "contact2", virtualSensorHandler)
+        subscribeToCommand(virtualsensor, "refresh", callRefresh)
+    }
+    if (refreshfreq > 0) {
+        schedule(now() + refreshfreq*1000*60, httpRefresh)
+    }
 }
 
 def callRefresh(evt) {
