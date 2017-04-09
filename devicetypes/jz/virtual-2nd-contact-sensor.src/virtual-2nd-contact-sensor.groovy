@@ -13,6 +13,7 @@ metadata {
 	definition (name: "Virtual 2nd Contact Sensor", namespace: "JZ", author: "JZ") {
 		capability "Contact Sensor"
 		capability "Sensor"
+        capability "Refresh"
 
 		command "open"
 		command "close"
@@ -32,13 +33,18 @@ metadata {
 		valueTile("refreshTriggered", "device.refreshTriggered", width: 2, height: 1, decoration: "flat") {
 			state("default", label: 'Refreshed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
-		standardTile("RefreshTrigger", "device.refreshswitch", width: 1, height: 1, decoration: "flat") {
-			state "default", label:'REFRESH', action: "refresh.refresh", icon: "st.secondary.refresh-icon", backgroundColor:"#53a7c0", nextState: "refreshing"
-			state "refreshing", label: 'REFRESHING', action: "refresh.refresh", icon: "st.secondary.refresh-icon", backgroundColor: "#FF6600", nextState: "default"
+		standardTile("refresh", "device.refresh", width: 1, height: 1, decoration: "flat") {
+			state "default", label:'REFRESH', action: "refresh", icon: "st.secondary.refresh-icon", backgroundColor:"#53a7c0", nextState: "refreshing"
+			state "refreshing", label: 'REFRESHING', action: "refresh", icon: "st.secondary.refresh-icon", backgroundColor: "#FF6600", nextState: "default"
 		}
 		main "contact"
-		details (["contact","sensor2Triggered","refreshTriggered","RefreshTrigger"])
+		details (["contact","sensor2Triggered","refreshTriggered","refresh"])
 	}
+}
+
+def refresh() {
+	log.debug "refresh()"
+	sendEvent(name: "refresh", value: new Date().format("yyyy-MM-dd h:mm:ss a", location.timeZone))
 }
 
 def parseORIG(String description) {

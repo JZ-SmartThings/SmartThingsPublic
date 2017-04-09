@@ -12,9 +12,8 @@
 metadata {
 	definition (name: "Virtual Custom Switch", namespace: "JZ", author: "JZ") {
 		capability "Switch"
-		
-		command "onPhysical"
-		command "offPhysical"
+        capability "Refresh"
+        attribute "refresh", "string"
 	}
 
 	tiles {
@@ -28,13 +27,18 @@ metadata {
 		valueTile("refreshTriggered", "device.refreshTriggered", width: 2, height: 1, decoration: "flat") {
 			state("default", label: 'Refreshed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
-		standardTile("RefreshTrigger", "device.refreshswitch", width: 1, height: 1, decoration: "flat") {
-			state "default", label:'REFRESH', action: "refresh.refresh", icon: "st.secondary.refresh-icon", backgroundColor:"#53a7c0", nextState: "refreshing"
-			state "refreshing", label: 'REFRESHING', action: "refresh.refresh", icon: "st.secondary.refresh-icon", backgroundColor: "#FF6600", nextState: "default"
+		standardTile("refresh", "device.refresh", width: 1, height: 1, decoration: "flat") {
+			state "default", label:'REFRESH', action: "refresh", icon: "st.secondary.refresh-icon", backgroundColor:"#53a7c0", nextState: "refreshing"
+			state "refreshing", label: 'REFRESHING', action: "refresh", icon: "st.secondary.refresh-icon", backgroundColor: "#FF6600", nextState: "default"
 		}
         main "switch"
-		details(["switch","on","off","customTriggered","refreshTriggered","RefreshTrigger"])
+		details(["switch","on","off","customTriggered","refreshTriggered","refresh"])
 	}
+}
+
+def refresh() {
+	log.debug "refresh()"
+	sendEvent(name: "refresh", value: new Date().format("yyyy-MM-dd h:mm:ss a", location.timeZone))
 }
 
 def parse(description) {
