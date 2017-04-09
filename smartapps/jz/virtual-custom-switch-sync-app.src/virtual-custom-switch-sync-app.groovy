@@ -96,7 +96,7 @@ def switchOffHandler(evt) {
 def virtualSwitchHandler(evt) {
 	log.debug "virtualSwitchHandler called with event: deviceId ${evt.deviceId} name:${evt.name} source:${evt.source} value:${evt.value} isStateChange: ${evt.isStateChange()} isPhysical: ${evt.isPhysical()} isDigital: ${evt.isDigital()} data: ${evt.data} device: ${evt.device}"
 	log.trace "EPOCH diff was: " + String.valueOf(now()-httpswitch*.currentValue("customTriggeredEPOCH")[0])
-	if (now()-httpswitch*.currentValue("customTriggeredEPOCH")[0] > 5000) {
+	if (now()-httpswitch*.currentValue("customTriggeredEPOCH")[0] > 3000) {
 		httpswitch.off()
         //for (int i = 1; i<=2; i++) { runIn(i,updateVirtualSwitch) }
         runIn(3,updateVirtualSwitch)
