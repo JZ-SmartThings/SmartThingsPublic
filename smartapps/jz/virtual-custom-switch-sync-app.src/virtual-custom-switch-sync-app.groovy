@@ -48,7 +48,7 @@ def updated() {
 
 def initialize() {
 	subscribe(app, runApp)
-	subscribe(httpswitch, "off", switchOffHandler)
+	subscribe(httpswitch, "customswitch", switchOffHandler)
 	subscribe(virtualswitch, "switch", virtualSwitchHandler)
 	subscribe(httpswitch, "contact2", virtualSensorHandler)
     subscribe(httpswitch, "customTriggered", updateCustomTriggered)

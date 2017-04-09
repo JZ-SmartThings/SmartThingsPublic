@@ -23,7 +23,7 @@ metadata {
 		status "closed": "contact:closed"
 	}
 	tiles(scale: 2) {
-		standardTile("contact", "device.contact", width: 6, height: 3) {
+		standardTile("contact", "device.contact", width: 6, height: 2) {
 			state("closed", label:'${name}', icon:"st.contact.contact.closed", backgroundColor:"#00A0DC")
 			state("open", label:'${name}', icon:"st.contact.contact.open", backgroundColor:"#e86d13")
 		}
