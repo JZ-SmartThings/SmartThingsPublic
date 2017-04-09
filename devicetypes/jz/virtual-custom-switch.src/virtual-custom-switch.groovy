@@ -16,18 +16,18 @@ metadata {
         attribute "refresh", "string"
 	}
 
-	tiles {
-		standardTile("switch", "device.switch", width: 3, height: 2, canChangeIcon: true) {
+	tiles(scale: 2) {
+		standardTile("switch", "device.switch", width: 6, height: 3, canChangeIcon: true) {
 			state "off", label: '${currentValue}', action: "switch.on", icon: "st.switches.switch.off", backgroundColor: "#ffffff"
 			state "on", label: '${currentValue}', action: "switch.off", icon: "st.switches.switch.on", backgroundColor: "#79b821"
 		}
-		valueTile("customTriggered", "device.customTriggered", width: 3, height: 1, decoration: "flat") {
+		valueTile("customTriggered", "device.customTriggered", width: 6, height: 2, decoration: "flat") {
 			state("default", label: 'Custom triggered:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
-		valueTile("refreshTriggered", "device.refreshTriggered", width: 2, height: 1, decoration: "flat") {
+		valueTile("refreshTriggered", "device.refreshTriggered", width: 4, height: 2, decoration: "flat") {
 			state("default", label: 'Refreshed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
-		standardTile("refresh", "device.refresh", width: 1, height: 1, decoration: "flat") {
+		standardTile("refresh", "device.refresh", width: 2, height: 2, decoration: "flat") {
 			state "default", label:'REFRESH', action: "refresh", icon: "st.secondary.refresh-icon", backgroundColor:"#53a7c0", nextState: "refreshing"
 			state "refreshing", label: 'REFRESHING', action: "refresh", icon: "st.secondary.refresh-icon", backgroundColor: "#FF6600", nextState: "default"
 		}

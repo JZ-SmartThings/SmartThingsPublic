@@ -22,18 +22,18 @@ metadata {
 		status "open": "contact:open"
 		status "closed": "contact:closed"
 	}
-	tiles {
-		standardTile("contact", "device.contact", width: 3, height: 2) {
+	tiles(scale: 2) {
+		standardTile("contact", "device.contact", width: 6, height: 3) {
 			state("closed", label:'${name}', icon:"st.contact.contact.closed", backgroundColor:"#00A0DC")
 			state("open", label:'${name}', icon:"st.contact.contact.open", backgroundColor:"#e86d13")
 		}
-		valueTile("sensor2Triggered", "device.sensor2Triggered", width: 3, height: 1, decoration: "flat") {
+		valueTile("sensor2Triggered", "device.sensor2Triggered", width: 6, height: 2, decoration: "flat") {
 			state("default", label: 'Sensor 2 State Changed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
-		valueTile("refreshTriggered", "device.refreshTriggered", width: 2, height: 1, decoration: "flat") {
+		valueTile("refreshTriggered", "device.refreshTriggered", width: 4, height: 2, decoration: "flat") {
 			state("default", label: 'Refreshed:\r\n${currentValue}', backgroundColor:"#ffffff")
 		}
-		standardTile("refresh", "device.refresh", width: 1, height: 1, decoration: "flat") {
+		standardTile("refresh", "device.refresh", width: 2, height: 2, decoration: "flat") {
 			state "default", label:'REFRESH', action: "refresh", icon: "st.secondary.refresh-icon", backgroundColor:"#53a7c0", nextState: "refreshing"
 			state "refreshing", label: 'REFRESHING', action: "refresh", icon: "st.secondary.refresh-icon", backgroundColor: "#FF6600", nextState: "default"
 		}
