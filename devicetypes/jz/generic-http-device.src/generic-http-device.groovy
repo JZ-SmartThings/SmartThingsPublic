@@ -1,7 +1,7 @@
 /**
- *  Generic HTTP Device v1.0.20170826
+ *  Generic HTTP Device v1.0.20180404
  *  Source code can be found here: https://github.com/JZ-SmartThings/SmartThings/blob/master/Devices/Generic%20HTTP%20Device/GenericHTTPDevice.groovy
- *  Copyright 2017 JZ
+ *  Copyright 2018 JZ
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -23,6 +23,7 @@ metadata {
 		capability "Refresh"
 		capability "Health Check"
 		attribute "mainTriggered", "string"
+		attribute "mainTriggeredEPOCH", "number"
 		attribute "refreshTriggered", "string"
 		attribute "customswitch", "string"
 		attribute "customTriggered", "string"
@@ -43,22 +44,24 @@ metadata {
 		command "RebootNow"
 		command "ResetTiles"
 		command "ClearTiles"
-		command "updateEPOCH"
+		command "updateMainEPOCH"
+		command "updateCustomEPOCH"
 	}
 
 	preferences {
 		input("DeviceIP", "string", title:"Device IP Address", description: "Please enter your device's IP Address", required: true, displayDuringSetup: true)
 		input("DevicePort", "string", title:"Device Port", description: "Empty assumes port 80.", required: false, displayDuringSetup: true)
-		input("DevicePath", "string", title:"URL Path", description: "Rest of the URL, include forward slash.", displayDuringSetup: true)
+		input("DevicePath", "string", title:"URL Path (RPi)", description: "Rest of the URL, include the / slash.", displayDuringSetup: true)
 		input(name: "DevicePostGet", type: "enum", title: "POST or GET. POST for PHP & GET for Arduino.", options: ["POST","GET"], defaultValue: "POST", required: false, displayDuringSetup: true)
-		input("UseOffVoiceCommandForCustom", "bool", title:"Use the OFF voice command (e.g. by Alexa) to control the Custom command? Assumed ON if MainTrigger is Momentary setting below is ON.", description: "", defaultValue: false, required: false, displayDuringSetup: true)
+		input("UseOffVoiceCommandForCustom", "bool", title:"Use the OFF voice command (e.g. by Alexa) to control the Custom command? May cause issues with MQTT sync. Alternative is using my sync SmartApp & Device for Custom command voice control.", description: "", defaultValue: false, required: false, displayDuringSetup: true)
 		input("DeviceMainMomentary", "bool", title:"MainTrigger is Momentary?", description: "", defaultValue: true, required: false, displayDuringSetup: true)	
-		input("DeviceMainPin", "number", title:'Main Pin Number in BCM Format', description: 'Empty assumes pin #4.', required: false, displayDuringSetup: false)
+		input("DeviceMainPin", "number", title:'Main Pin # in BCM Format (RPi)', description: 'Empty assumes pin #4.', required: false, displayDuringSetup: false)
 		input("DeviceCustomMomentary", "bool", title:"CustomTrigger is Momentary?", description: "", defaultValue: true, required: false, displayDuringSetup: true)
-		input("DeviceCustomPin", "number", title:'Custom Pin Number in BCM Format', description: 'Empty assumes pin #21.', required: false, displayDuringSetup: false)
+		input("DeviceCustomPin", "number", title:'Custom Pin # in BCM Format (RPi)', description: 'Empty assumes pin #21.', required: false, displayDuringSetup: false)
 		input("DeviceSensorInvert", "bool", title:"Invert open/closed states on the primary contact sensor?", description: "", defaultValue: false, required: false, displayDuringSetup: false)	
 		input("DeviceSensor2Invert", "bool", title:"Invert open/closed states on the secondary contact sensor?", description: "", defaultValue: false, required: false, displayDuringSetup: false)	
 		input("UseJSON", "bool", title:"Use JSON instead of HTML?", description: "", defaultValue: false, required: false, displayDuringSetup: true)
+		input(name: "DeviceTempMeasurement", type: "enum", title: "Temperature measurement in Celcius or Fahrenheit? Default is Fahrenheit.", options: ["Celcius","Fahrenheit"], defaultValue: "Fahrenheit", required: false, displayDuringSetup: true)
 		section() {
 			input("HTTPAuth", "bool", title:"Requires User Auth?", description: "Choose if the HTTP requires basic authentication", defaultValue: false, required: true, displayDuringSetup: true)
 			input("HTTPUser", "string", title:"HTTP User", description: "Enter your basic username", required: false, displayDuringSetup: true)
@@ -152,7 +155,7 @@ metadata {
 			state "default", label:'Clear Tiles', action:"ClearTiles", icon:"st.Bath.bath9"
 		}
 		valueTile("temperature", "device.temperature", width: 2, height: 2) {
-			state("default", label:'Temp\n ${currentValue}',
+			state("default", label:'Temp\n${currentValue}',
 				backgroundColors:[
 					[value: 32, color: "#153591"],
 					[value: 44, color: "#1e9cbb"],
@@ -165,7 +168,7 @@ metadata {
 			)
 		}
 		valueTile("humidity", "device.humidity", width: 2, height: 2) {
-			state("default", label: 'Humidity\n ${currentValue}',
+			state("default", label: 'Humidity\n${currentValue}',
 				backgroundColors:[
 					[value: 50, color: "#00cc33"],
 					[value: 60, color: "#99ff33"],
@@ -212,7 +215,7 @@ def on() {
 	runCmd(FullCommand)
 }
 def off() {
-	if (DeviceMainMomentary==true || UseOffVoiceCommandForCustom==true) {
+	if (UseOffVoiceCommandForCustom==true) {
 		settings.UseOffVoiceCommandForCustom = true
 		CustomTrigger()
 	} else {
@@ -326,10 +329,15 @@ def runCmd(String varCommand) {
 	}
 }
 
-def updateEPOCH(String caller) {
-	log.debug "EPOCH before update: " + device.currentValue("customTriggeredEPOCH")
+def updateMainEPOCH(String caller) {
+	log.debug "EPOCH Main before update: " + device.currentValue("mainTriggeredEPOCH")
+	sendEvent(name: "mainTriggeredEPOCH", value: now()+6000, isStateChange: true)
+	log.debug "Updated Main EPOCH ${caller} to: " + now()+6000
+}
+def updateCustomEPOCH(String caller) {
+	log.debug "EPOCH Custom before update: " + device.currentValue("customTriggeredEPOCH")
 	sendEvent(name: "customTriggeredEPOCH", value: now()+6000, isStateChange: true)
-	log.debug "Updated EPOCH ${caller} to: " + now()+6000
+	log.debug "Updated Custom EPOCH ${caller} to: " + now()+6000
 }
 
 def parse(String description) {
@@ -353,6 +361,13 @@ def parse(String description) {
 			jsonlist = slurper.parseText(body)
 			//log.debug "JSONLIST---" + jsonlist."CPU"
 			jsonlist.put ("Date", new Date().format("yyyy-MM-dd h:mm:ss a", location.timeZone))
+			if (jsonlist."CurrentRequest".contains('Refresh')) { jsonlist.put ("Refresh", "Success") }
+			if (jsonlist."CurrentRequest".contains('MainTrigger=')) { jsonlist.put ("MainTrigger", "Success") }
+			if (jsonlist."CurrentRequest".contains('MainTriggerOn=')) { jsonlist.put ("MainTriggerOn", "Success") }
+			if (jsonlist."CurrentRequest".contains('MainTriggerOff=')) { jsonlist.put ("MainTriggerOff", "Success") }
+			if (jsonlist."CurrentRequest".contains('CustomTrigger=')) { jsonlist.put ("CustomTrigger", "Success") }
+			if (jsonlist."CurrentRequest".contains('CustomTriggerOn=')) { jsonlist.put ("CustomTriggerOn", "Success") }
+			if (jsonlist."CurrentRequest".contains('CustomTriggerOff=')) { jsonlist.put ("CustomTriggerOff", "Success") }
 		} else {
 			jsonlist.put ("Date", new Date().format("yyyy-MM-dd h:mm:ss a", location.timeZone))
 			def data=bodyReturned.eachLine { line ->
@@ -379,36 +394,36 @@ def parse(String description) {
 				if (line.contains('CustomTriggerOff=Failed : Authentication Required!')) { jsonlist.put ("CustomTriggerOff", "Authentication Required!") }
 				if (line.contains('CustomPinStatus=1')) { jsonlist.put ("CustomPinStatus".replace("=",""), 1) }
 				if (line.contains('CustomPinStatus=0')) { jsonlist.put ("CustomPinStatus".replace("=",""), 0) }
-				if (DeviceSensorInvert == false) { 
+				if (DeviceSensorInvert == false) {
 					if (line.contains('Contact Sensor=Open')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Open") }
 					if (line.contains('Contact Sensor=Closed')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Closed") }
 				} else {
 					if (line.contains('Contact Sensor=Open')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Closed") }
 					if (line.contains('Contact Sensor=Closed')) { jsonlist.put ("SensorPinStatus".replace("=",""), "Open") }
 				}
-				if (DeviceSensor2Invert == false) { 
+				if (DeviceSensor2Invert == false) {
 					if (line.contains('Contact Sensor 2=Open')) { jsonlist.put ("Sensor2PinStatus".replace("=",""), "Open") }
 					if (line.contains('Contact Sensor 2=Closed')) { jsonlist.put ("Sensor2PinStatus".replace("=",""), "Closed") }
 				} else {
 					if (line.contains('Contact Sensor 2=Open')) { jsonlist.put ("Sensor2PinStatus".replace("=",""), "Closed") }
 					if (line.contains('Contact Sensor 2=Closed')) { jsonlist.put ("Sensor2PinStatus".replace("=",""), "Open") }
 				}
+				if (line.contains('Refresh=')) { jsonlist.put ("Refresh", "Success") }
 				if (line.contains('Refresh=Success')) { jsonlist.put ("Refresh", "Success") }
 				if (line.contains('Refresh=Failed : Authentication Required!')) { jsonlist.put ("Refresh", "Authentication Required!") }
 				if (line.contains('RebootNow=Success')) { jsonlist.put ("RebootNow", "Success") }
 				if (line.contains('RebootNow=Failed : Authentication Required!')) { jsonlist.put ("RebootNow", "Authentication Required!") }
 				//ARDUINO CHECKS
-				if (line.contains('/MainTrigger=')) { jsonlist.put ("MainTrigger".replace("=",""), "Success") }
-				if (line.contains('/MainTriggerOn=')) { jsonlist.put ("MainTriggerOn", "Success") }
-				if (line.contains('/MainTriggerOff=')) { jsonlist.put ("MainTriggerOff", "Success") }
+				if (line.contains('MainTrigger=')) { jsonlist.put ("MainTrigger".replace("=",""), "Success") }
+				if (line.contains('MainTriggerOn=')) { jsonlist.put ("MainTriggerOn", "Success") }
+				if (line.contains('MainTriggerOff=')) { jsonlist.put ("MainTriggerOff", "Success") }
 				if (line.contains('RELAY1 pin is now: On')) { jsonlist.put ("MainPinStatus".replace("=",""), 1) }
 				if (line.contains('RELAY1 pin is now: Off')) { jsonlist.put ("MainPinStatus".replace("=",""), 0) }
-				if (line.contains('/CustomTrigger=')) { jsonlist.put ("CustomTrigger".replace("=",""), "Success") }
-				if (line.contains('/CustomTriggerOn=')) { jsonlist.put ("CustomTriggerOn", "Success") }
-				if (line.contains('/CustomTriggerOff=')) { jsonlist.put ("CustomTriggerOff", "Success") }
+				if (line.contains('CustomTrigger=')) { jsonlist.put ("CustomTrigger".replace("=",""), "Success") }
+				if (line.contains('CustomTriggerOn=')) { jsonlist.put ("CustomTriggerOn", "Success") }
+				if (line.contains('CustomTriggerOff=')) { jsonlist.put ("CustomTriggerOff", "Success") }
 				if (line.contains('RELAY2 pin is now: On')) { jsonlist.put ("CustomPinStatus".replace("=",""), 1) }
 				if (line.contains('RELAY2 pin is now: Off')) { jsonlist.put ("CustomPinStatus".replace("=",""), 0) }
-				if (line == '/Refresh=') { jsonlist.put ("Refresh", "Success") }
 			}
 		}
 	}
@@ -427,12 +442,12 @@ def parse(String description) {
 		if (jsonlist."CustomTrigger"=="Success") {
 			sendEvent(name: "customswitch", value: "on", isStateChange: true)
 			sendEvent(name: "customTriggered", value: "MOMENTARY @ " + jsonlist."Date", unit: "")
-            updateEPOCH("from parse > CustomTrigger")
+            updateCustomEPOCH("from parse > CustomTrigger")
 			whichTile = 'customoff'
 		}
 		if (jsonlist."CustomTriggerOn"=="Success" && jsonlist."CustomPinStatus"==1) {
 			sendEvent(name: "customTriggered", value: "ON @ " + jsonlist."Date", unit: "")
-            updateEPOCH("from parse > CustomTriggerOn")
+            updateCustomEPOCH("from parse > CustomTriggerOn")
 			whichTile = 'customon'
 		}
 		if (jsonlist."CustomTriggerOn"=="Authentication Required!") {
@@ -440,7 +455,7 @@ def parse(String description) {
 		}
 		if (jsonlist."CustomTriggerOff"=="Success" && jsonlist."CustomPinStatus"==0) {
 			sendEvent(name: "customTriggered", value: "OFF @ " + jsonlist."Date", unit: "")
-            updateEPOCH("from parse > CustomTriggerOff")
+            updateCustomEPOCH("from parse > CustomTriggerOff")
 			whichTile = 'customoff'
 		}
 		if (jsonlist."CustomTriggerOff"=="Authentication Required!") {
@@ -448,12 +463,12 @@ def parse(String description) {
 		}
 		if (jsonlist."CustomPinStatus"==1) {
 			sendEvent(name: "customswitch", value: "on", isStateChange: true)
-            updateEPOCH("from parse > CustomPinStatus 1")
+            updateCustomEPOCH("from parse > CustomPinStatus 1")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 			whichTile = 'customon'
 		} else if (jsonlist."CustomPinStatus"==0) {
 			sendEvent(name: "customswitch", value: "off", isStateChange: true)
-            updateEPOCH("from parse > CustomPinStatus 0")
+            updateCustomEPOCH("from parse > CustomPinStatus 0")
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
 			whichTile = 'customoff'
 		}
@@ -463,10 +478,12 @@ def parse(String description) {
 		if (jsonlist."MainTrigger"=="Success") {
 			sendEvent(name: "switch", value: "on", isStateChange: true)
 			sendEvent(name: "mainTriggered", value: "MOMENTARY @ " + jsonlist."Date", unit: "")
+            updateMainEPOCH("from parse > MainTrigger")
 			whichTile = 'mainoff'
 		}
 		if (jsonlist."MainTriggerOn"=="Success" && jsonlist."MainPinStatus"==1) {
 			sendEvent(name: "mainTriggered", value: "ON @ " + jsonlist."Date", unit: "")
+            updateMainEPOCH("from parse > MainTriggerOn")
 			whichTile = 'mainon'
 		}
 		if (jsonlist."MainTriggerOn"=="Authentication Required!") {
@@ -474,6 +491,7 @@ def parse(String description) {
 		}
 		if (jsonlist."MainTriggerOff"=="Success" && jsonlist."MainPinStatus"==0) {
 			sendEvent(name: "mainTriggered", value: "OFF @ " + jsonlist."Date", unit: "")
+            updateMainEPOCH("from parse > MainTriggerOff")
 			whichTile = 'mainoff'
 		}
 		if (jsonlist."MainTriggerOff"=="Authentication Required!") {
@@ -483,10 +501,12 @@ def parse(String description) {
 		if (jsonlist."MainPinStatus"==1) {
 			sendEvent(name: "switch", value: "on", isStateChange: true)
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
+            updateMainEPOCH("from parse > CustomPinStatus 1")
 			whichTile = 'mainon'
 		} else if (jsonlist."MainPinStatus"==0) {
 			sendEvent(name: "switch", value: "off", isStateChange: true)
 			sendEvent(name: "refreshswitch", value: "default", isStateChange: true)
+            updateMainEPOCH("from parse > CustomPinStatus 0")
 			whichTile = 'mainoff'
 		}
 		if (device.currentState("contact")==null) {sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName is closed")}
@@ -527,19 +547,29 @@ def parse(String description) {
 		if (jsonlist."CPU Temp") {
 			sendEvent(name: "cpuTemp", value: jsonlist."CPU Temp".replace("=","\n").replace("\'","°").replace("C ","C="), unit: "")
 		}
+		
 		if (jsonlist."Free Mem") {
 			sendEvent(name: "freeMem", value: jsonlist."Free Mem".replace("=","\n"), unit: "")
 		}
 		if (jsonlist."Temperature") {
-			sendEvent(name: "temperature", value: jsonlist."Temperature".replace("=","\n").replace("\'","°").replace("C ","C="), unit: "")
+			//sendEvent(name: "temperature", value: jsonlist."Temperature".replace("=","\n").replace("\'","°").replace("C ","C="), unit: "")
+			if (DeviceTempMeasurement == "Celcius") {
+				sendEvent(name: "temperature", value: jsonlist."Temperature".split(" ")[0].replace("°C"," ").replace("\'C"," "), unit: "")
+			} else {
+				sendEvent(name: "temperature", value: jsonlist."Temperature".split(" ")[1].replace("°F"," ").replace("\'F"," "), unit: "")
+			}
 			//String s = jsonlist."Temperature"
 			//for(int i = 0; i < s.length(); i++)	{
 			//   int c = s.charAt(i);
 			//   log.trace "'${c}'\n"
 			//}
+		} else {
+			sendEvent(name: "temperature", value: 0, unit: "")
 		}
 		if (jsonlist."Humidity") {
 			sendEvent(name: "humidity", value: jsonlist."Humidity".replace("=","\n"), unit: "")
+		} else {
+			sendEvent(name: "humidity", value: 0, unit: "")
 		}
 		if (jsonlist."RebootNow") {
 			whichTile = 'RebootNow'
@@ -564,11 +594,11 @@ def parse(String description) {
         case 'customoff':
 			sendEvent(name: "customswitch", value: "off", isStateChange: true)
 			return createEvent(name: "customswitch", value: "off", isStateChange: true)
-            updateEPOCH("from parse > customoff")
+            updateCustomEPOCH("from parse > customoff")
         case 'customon':
 			sendEvent(name: "customswitch", value: "on", isStateChange: true)
 			return createEvent(name: "customswitch", value: "on", isStateChange: true)
-            updateEPOCH("from parse > customon")
+            updateCustomEPOCH("from parse > customon")
         case 'mainoff':
 			return createEvent(name: "switch", value: "off", isStateChange: true)
         case 'mainon':
